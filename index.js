@@ -3,10 +3,12 @@ const express=  require('express');
 const session = require('express-session');
 const fileStore = require('session-file-store')(session);
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
 const dishesRoute = require('./route/dishes.route');
 const promoRoute = require('./route/promoRouter');
 const leaderRoute = require('./route/leaderRouter');
 const userRoute = require('./route/userRouter');
+require('./authenticate/authenticate');
 const Users = require('./model/users');
 const host = 'localhost';
 const port = 3000;
@@ -91,6 +93,9 @@ app.use(session({
   store: new fileStore()
 }))
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.get('/', (req, res, next) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html');
@@ -101,27 +106,16 @@ app.use('/users', userRoute);
 
 app.use((req, res, next) => {
   console.log(req.headers);
-  if(!req.session.user) {
+  if(!req.user) {
     const authHeader = req.headers.authorization;
     if(!authHeader) {
       const err = new Error('You are not authenticated!');
-      res.setHeader('WWW-Authenticate', 'Basic');
-      err.status = 404;
+      err.status = 401;
       return next(err);
     }
 
   } else {
-    Users.findOne({ username: req.session.user.username })
-      .then(user => {
-        if(user) {
-          next();
-        } else {
-          const err = new Error('You are not authenticated!');
-          res.setHeader('WWW-Authenticate', 'Basic');
-          err.status = 404;
-          return next(err);
-        }
-      })
+    next();
   }
 }) 
 

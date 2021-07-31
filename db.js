@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Dishes = require('./model/dishes.model');
 const Promotions = require('./model/promotions');
 const leaders = require('./model/leaders');
+const users = require('./model/users');
 
 const url = 'mongodb://localhost:27017/confusion';
 
