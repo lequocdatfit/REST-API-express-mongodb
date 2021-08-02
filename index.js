@@ -19,7 +19,8 @@ const app = express();
 require('./db');
 
 app.use(express.json());
-//app.use(express.urlencoded({extended: false}))
+//app.use(express.urlencoded({ extended: false}));
+
 
 
 // Authentication Basic
@@ -104,20 +105,20 @@ app.get('/', (req, res, next) => {
 
 app.use('/users', userRoute);
 
-app.use((req, res, next) => {
-  console.log(req.headers);
-  if(!req.user) {
-    const authHeader = req.headers.authorization;
-    if(!authHeader) {
-      const err = new Error('You are not authenticated!');
-      err.status = 401;
-      return next(err);
-    }
+// app.use((req, res, next) => {
+//   console.log(req.headers);
+//   if(!req.user) {
+//     const authHeader = req.headers.authorization;
+//     if(!authHeader) {
+//       const err = new Error('You are not authenticated!');
+//       err.status = 401;
+//       return next(err);
+//     }
 
-  } else {
-    next();
-  }
-}) 
+//   } else {
+//     next();
+//   }
+// }) 
 
 app.use('/dishes', dishesRoute);
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const Dishes = require('../model/dishes.model');
+const authenticate = require('../authenticate/authenticate');
 const router = express.Router();
 
 router.route('/')
@@ -12,7 +13,7 @@ router.route('/')
     }).catch((err) => next(err));
 })
 
-.post((req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
   Dishes.create(req.body)
     .then((dishes) => {
       console.log('Dish Created ', dishes);
@@ -22,12 +23,12 @@ router.route('/')
     }).catch((err) => next(err));
 })
 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
   res.statusCode = 403;
   res.end('Put operation not supported on /dishes');
 })
 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
   Dishes.remove({})
     .then((resp) => {
       console.log('Delete all dishes');
@@ -47,12 +48,12 @@ router.route('/:dishId')
     }).catch(err => next(err))
 })
 
-.post((req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
   res.status = 403;
   res.end('Post operation not supported on /dishes/' + req.params.dishId);
 })
 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
   Dishes.findByIdAndUpdate(req.params.dishId, {
     $set: req.body
   }, {new: true})
@@ -65,7 +66,7 @@ router.route('/:dishId')
 })
 
 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
   Dishes.findByIdAndRemove(req.params.dishId)
     .then((resp) => {
         res.statusCode = 200;
@@ -92,7 +93,7 @@ router.route('/:dishId/comments')
     }).catch((err) => next(err));
 })
 
-.post((req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
   Dishes.findById(req.params.dishId)
   .then((dish) => {
       if (dish != null) {
@@ -113,12 +114,12 @@ router.route('/:dishId/comments')
   .catch((err) => next(err));
 })
 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
   res.statusCode = 403;
   res.end('Put operation not supported on /dishes/' + req.params.dishId + '/comments');
 })
 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
   Dishes.findById(req.params.dishId)
     .then((dish) => {
       if(dish) {
@@ -151,12 +152,12 @@ router.route('/:dishId/comments/:commentId')
     }).catch(err => next(err))
 })
 
-.post((req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
   res.status = 403;
   res.end('Post operation not supported on /dishes/' + req.params.dishId);
 })
 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
   Dishes.findById(req.params.dishId)
     .then((dish) => {
       if(dish && dish.comments.id(req.params.commentId)) {
@@ -182,7 +183,7 @@ router.route('/:dishId/comments/:commentId')
 })
 
 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
   Dishes.findById(req.params.dishId)
     .then((dish) => {
       if(dish && dish.comments.id(req.params.commentId)) {
