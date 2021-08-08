@@ -10,10 +10,17 @@ const leaderRoute = require('./route/leaderRouter');
 const userRoute = require('./route/userRouter');
 require('./authenticate/authenticate');
 const Users = require('./model/users');
-const host = 'localhost';
-const port = 3000;
 
 const app = express();
+
+// Secure traffic only
+app.all('*', (req, res, next) => {
+  if(req.secure) {
+    return next();
+  } else {
+    res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+  }
+})
 
 // connect mongodb
 require('./db');
@@ -97,6 +104,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+
 app.get('/', (req, res, next) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html');
@@ -134,8 +143,4 @@ app.use(function (err, req, res, next) {
   res.end(err.stack);
 })
 
-const server = http.createServer(app);
-
-server.listen(port, host, () => {
-  console.log(`Server listening on port ${port}`);
-});
+module.exports = app;
