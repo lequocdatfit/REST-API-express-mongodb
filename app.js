@@ -8,6 +8,7 @@ const dishesRoute = require('./route/dishes.route');
 const promoRoute = require('./route/promoRouter');
 const leaderRoute = require('./route/leaderRouter');
 const userRoute = require('./route/userRouter');
+const uploadRoute = require('./route/uploadRouter');
 require('./authenticate/authenticate');
 const Users = require('./model/users');
 
@@ -134,6 +135,8 @@ app.use('/dishes', dishesRoute);
 app.use('/promotions', promoRoute);
 
 app.use('/leaders', leaderRoute);
+
+app.use('/imageUpload', uploadRoute);
 
 //errors handle
 app.use(function (err, req, res, next) {
