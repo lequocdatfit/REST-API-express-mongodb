@@ -9,6 +9,7 @@ const promoRoute = require('./route/promoRouter');
 const leaderRoute = require('./route/leaderRouter');
 const userRoute = require('./route/userRouter');
 const uploadRoute = require('./route/uploadRouter');
+const favoriteRoute = require('./route/favorite.route');
 require('./authenticate/authenticate');
 const Users = require('./model/users');
 
@@ -28,7 +29,7 @@ require('./db');
 
 app.use(express.json());
 //app.use(express.urlencoded({ extended: false}));
-
+app.use(express.static('public'))
 
 
 // Authentication Basic
@@ -137,6 +138,8 @@ app.use('/promotions', promoRoute);
 app.use('/leaders', leaderRoute);
 
 app.use('/imageUpload', uploadRoute);
+
+app.use('/favorites', favoriteRoute);
 
 //errors handle
 app.use(function (err, req, res, next) {
